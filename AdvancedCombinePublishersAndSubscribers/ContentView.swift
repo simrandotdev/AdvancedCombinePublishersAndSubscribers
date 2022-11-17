@@ -12,11 +12,12 @@ struct ContentView: View {
     @StateObject var vm = ViewModel()
     
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        ScrollView {
+            VStack {
+                ForEach(vm.data, id: \.self) { item in
+                    Text(item)
+                }
+            }
         }
         .padding()
     }
