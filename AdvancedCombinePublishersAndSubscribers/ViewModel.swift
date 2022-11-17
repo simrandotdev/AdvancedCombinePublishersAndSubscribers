@@ -12,6 +12,8 @@ class ViewModel: ObservableObject {
     
     @Published var data: [String] = []
     
+    
+    
     private let dataService = DataService()
     
     private var cancellables = Set<AnyCancellable>()
@@ -21,7 +23,7 @@ class ViewModel: ObservableObject {
     }
     
     private func addSubscribers() {
-        dataService.$basicPublisher
+        dataService.passthroughPublisher
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -49,7 +51,9 @@ class ViewModel: ObservableObject {
 
 class DataService {
     
-    @Published var basicPublisher: String = ""
+//    @Published var basicPublisher: String = ""
+    let currentValuePublisher = CurrentValueSubject<String, Error>("")
+    let passthroughPublisher = PassthroughSubject<String, Error>()
     
     init() {
         publishFakeData()
@@ -59,7 +63,8 @@ class DataService {
         
         for i in 0..<5 {
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(i)) {
-                self.basicPublisher = "Item \(i)"
+                self.currentValuePublisher.send("Text \(i)")
+                self.passthroughPublisher.send("Text \(i)")
             }
         }
         
